@@ -1,0 +1,13 @@
+{
+  "name": "claude-mod-spectra-buttons",
+  "owner": {
+    "name": "fripig"
+  },
+  "plugins": [
+    {
+      "name": "spectra-buttons",
+      "source": "./"
+    }
+  ],
+  "description": "Turn /spectra-* commands mentioned in Claude's reply into buttons above the prompt"
+}
