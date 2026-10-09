@@ -1,6 +1,6 @@
 {
   "name": "spectra-buttons",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Turn /spectra-* commands mentioned in Claude's reply into buttons above the prompt",
   "types": "./types/index.d.ts",
   "author": {
