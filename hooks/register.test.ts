@@ -20,3 +20,19 @@ test('參數只收 ASCII token；路徑裡的 /spectra- 不算', async () => {
   expect(extractCommands('/spectra-ingest #15.')).toEqual(['/spectra-ingest #15'])
   expect(extractCommands('見 docs/spectra-guide.md 與 a/spectra-x')).toEqual([])
 })
+
+test('git push 連同 ASCII 參數一起抓，與 /spectra-* 依出現順序排列', async () => {
+  const answer = [
+    '先 `git push -u origin feat/login`，',
+    '再跑 /spectra-verify gl-12-add-login，最後 git  push origin HEAD:main。',
+    '別用 git push --force-with-lease 以外的強推；git push 就好.',
+  ].join('\n')
+  expect(extractCommands(answer)).toEqual([
+    'git push -u origin feat/login',
+    '/spectra-verify gl-12-add-login',
+    'git push origin HEAD:main',
+    'git push --force-with-lease',
+    'git push',
+  ])
+  expect(extractCommands('見 my-git push 與 legit push')).toEqual([])
+})

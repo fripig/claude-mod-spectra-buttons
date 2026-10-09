@@ -6,11 +6,18 @@ const commands = atom({ plugin: 'spectra-buttons', key: 'commands' } as const, [
 
 // `/spectra-<skill>` 後面可帶一個參數（change 名、gl-<id>-…、#<id>）；只收 ASCII token，
 // 避免把句子後面的中文一起吃進去
-const PATTERN = /(?<![\w/])\/(spectra-[a-z][a-z-]*)(?:[ \t]+(#?[A-Za-z0-9][\w.\-/#]*))?/g
+const SPECTRA = String.raw`(?<![\w/])\/(spectra-[a-z][a-z-]*)(?:[ \t]+(#?[A-Za-z0-9][\w.\-/#]*))?`
+// `git push` 連同後面的 ASCII 參數（-u、origin、feat/x、HEAD:main…），遇到中文、反引號或換行就停
+const GIT_PUSH = String.raw`(?<![\w/-])(git[ \t]+push(?:[ \t]+[A-Za-z0-9+\-][\w.\-/:+@=]*)*)`
+const PATTERN = new RegExp(`${SPECTRA}|${GIT_PUSH}`, 'g')
 
 export const extractCommands = (text: string): string[] => {
   const seen = new Set<string>()
   for (const m of text.matchAll(PATTERN)) {
+    if (m[3]) {
+      seen.add(m[3].replace(/[.,;:]+$/, '').replace(/[ \t]+/g, ' '))
+      continue
+    }
     const arg = m[2]?.replace(/[.,;:]+$/, '')
     seen.add(arg ? `/${m[1]} ${arg}` : `/${m[1]}`)
   }
